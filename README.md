@@ -1,61 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gold Trading API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based API for trading raw gold (طلای آبشده) between users with automatic order matching.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Buy and sell order placement
+- Automatic order matching based on price and availability
+- Tiered commission system
+- User balance management
+- Order history and trade records
+- RESTful API design
+- No authentication required
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Commission Structure
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Up to 1g: 2%
+- 1g to 10g: 1.5%
+- Over 10g: 1%
+- Minimum fee: 50,000 Toman
+- Maximum fee: 5,000,000 Toman
 
-## Learning Laravel
+## API Endpoints
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Orders
+- GET `/api/order` - List all orders
+- POST `/api/order/store` - Create a new order
+- GET `/api/order/show/{id}` - Get order details
+- POST `/api/order/cancelled/{id}` - Cancel an order
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Trade Historys
+- GET `/api/order/history/{id}` - Get specific trade user history
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   composer install
+   ```
+3. Copy `.env.example` to `.env` and configure your database
+4. Generate application key:
+   ```bash
+   php artisan key:generate
+   ```
+5. Run migrations and seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Testing
 
-### Premium Partners
+The project includes test users with predefined balances:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+- Ahmad: 100 million Toman, 0g gold
+- Reza: 50 million Toman, 0g gold
+- Akbar: 0 Toman, 8.517g gold
+- Admin: 0 Toman, 0g gold (receives all commissions)
 
-## Contributing
+## Example API Usage
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Create a Buy Order
+```bash
+curl -X POST http://localhost:8000/api/order/store \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 4,
+    "order_type": "buy",
+    "amount": 2,
+    "price": 10000000
+  }'
+```
 
-## Code of Conduct
+### Create a Sell Order
+```bash
+curl -X POST http://localhost:8000/api/order/store \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 2,
+    "order_type": "sell",
+    "amount": 8,
+    "price": 10000000
+  }'
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Get Trade History
+```bash
+curl -X GET "http://localhost:8000/api/order/history/{userId}?start_date=2024-03-20&end_date=2024-03-21"
+```
 
-## Security Vulnerabilities
+## Technical Details
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Laravel 12.x
+- PHP 8.2+
+- MySQL/PostgreSQL
+- RESTful API design
+- SOLID principles
+- Clean Code practices
+- Service-based architecture
+- Repository Pattern
+- Commission handling via trait
+- Row-level locking for concurrency control
 
-## License
+## Postman Collection
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+A Postman collection is available in the `postman` directory. Import it into Postman to test the API endpoints.
+
